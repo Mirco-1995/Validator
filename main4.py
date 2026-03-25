@@ -8,10 +8,11 @@ from pathlib import Path
 from minio import Minio
 from dotenv import load_dotenv
 from lxml import etree
+from concurrent.futures import ThreadPoolExecutor
 
 logging.basicConfig(
     filename='log.txt',
-    level=logging.ERROR,
+    level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     filemode='w'
 )
@@ -55,7 +56,7 @@ def processa_file_xml(xml_file, schema, directory_ok, directory_ko):
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-f", "--file", required=True)
+    parser.add_argument("-f", "--file", required=True, nargs="+")
     args = parser.parse_args()
     
     load_dotenv()
@@ -102,27 +103,35 @@ def get_s3_config():
     return minio_client, s3_bucket
 
 
-zip_key = get_args()
+def processa_zip(zip_key, minio_client, s3_bucket):
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        tmp_path = Path(tmp_dir)
+
+        zip_local_path = tmp_path/"archive.zip"
+
+        minio_client.fget_object(s3_bucket, zip_key, str(zip_local_path))
+
+        logging.info(f"Estrazione archivio ZIP: {zip_local_path}...")
+        with zipfile.ZipFile(zip_local_path, "r") as zf:
+            zf.extractall(tmp_path)
+
+        directory_xml = str(tmp_path)
+
+        # Impostazioni delle directory e del file XSD
+        xsd_file = os.getenv("XSD_FILE")
+        directory_ok = os.getenv("XML_OK_DIRECTORY")
+        directory_ko = os.getenv("XML_KO_DIRECTORY")
+
+        # Esegui il programma senza multiprocessing
+        processa_xml(directory_xml, xsd_file, directory_ok, directory_ko)
+
+
+zip_keys = get_args()
 
 minio_client, s3_bucket = get_s3_config()
 
-with tempfile.TemporaryDirectory() as tmp_dir:
-    tmp_path = Path(tmp_dir)
+with ThreadPoolExecutor() as executor:
+    futures = [executor.submit(processa_zip, zip_key, minio_client, s3_bucket) for zip_key in zip_keys]
 
-    zip_local_path = tmp_path/"archive.zip"
-
-    minio_client.fget_object(s3_bucket, zip_key, str(zip_local_path))
-
-    logging.info(f"Estrazione archivio ZIP: {zip_local_path}...")
-    with zipfile.ZipFile(zip_local_path, "r") as zf:
-        zf.extractall(tmp_path)
-
-    directory_xml = str(tmp_path)
-
-    # Impostazioni delle directory e del file XSD
-    xsd_file = os.getenv("XSD_FILE")
-    directory_ok = os.getenv("XML_OK_DIRECTORY")
-    directory_ko = os.getenv("XML_KO_DIRECTORY")
-
-    # Esegui il programma senza multiprocessing
-    processa_xml(directory_xml, xsd_file, directory_ok, directory_ko)
+    for f in futures:
+        f.result()
