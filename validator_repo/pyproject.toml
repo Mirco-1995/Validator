@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "opi-validator"
+version = "1.0.0"
+description = "Validatore XML OPI"
+authors = ["team"]
+packages = [{ include = "opi_validator", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+minio = "*"
+python-dotenv = "*"
+lxml = "*"
+
+[tool.poetry.scripts]
+opi-validator = "opi_validator.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,939 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2025 (https://www.altova.com) by License (BANCA D'ITALIA) -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tes="http://tesoreria.bancaditalia.it/" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" targetNamespace="http://tesoreria.bancaditalia.it/" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.2">
+        <!-- Import del namespace per la firma digitale -->
+        <xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./xmldsig-core-schema.xsd"/>
+        <xsd:element name="OPI_TS">
+                <xsd:complexType>
+                        <xsd:sequence>
+                                <xsd:element name="disposizione" type="tes:disposizioneType"/>
+                                <xsd:element ref="ds:Signature" minOccurs="0" maxOccurs="10"/>
+                        </xsd:sequence>
+                </xsd:complexType>
+        </xsd:element>
+        <xsd:complexType name="disposizioneType">
+                <xsd:sequence>
+                        <xsd:element name="chiaveDisposizione" type="tes:chiaveDisposizioneType"/>
+                        <xsd:element name="descrizione" type="tes:baseStringType" minOccurs="0"/>
+                        <xsd:element name="riservatezza" type="tes:riservatezzaType" default="0" minOccurs="0"/>
+                        <xsd:choice minOccurs="1" maxOccurs="1">
+                                <xsd:element name="ordinativo" type="tes:ordinativoType"/>
+                                <xsd:element name="annullamento" type="tes:annullamentoType"/>
+                                <xsd:element name="variazioneEntrata" type="tes:variazioneEntrataType"/>
+                                <xsd:element name="variazioneUscita" type="tes:variazioneUscitaType"/>
+                        </xsd:choice>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:simpleType name="riservatezzaType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="0"/>
+                        <xsd:enumeration value="1"/>
+                        <xsd:enumeration value="2"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:complexType name="ordinativoType">
+                <xsd:sequence>
+                        <xsd:element name="end2endID" type="tes:string35ExtType" minOccurs="0"/>
+                        <xsd:element name="dataEsecuzioneDisposizione" type="tes:baseDateType" minOccurs="0"/>
+                        <xsd:element name="flagRiproposizioneAutomatica" type="tes:flagSNType" minOccurs="0"/>
+                        <xsd:element name="dataEsecuzioneOperazioneOriginaria" type="tes:baseDateType" minOccurs="0"/>
+                        <xsd:element name="annoEsercizio" type="tes:baseYearType"/>
+                        <xsd:element name="addebito" type="tes:addebitoType"/>
+                        <xsd:element name="accredito" type="tes:accreditoType"/>
+                        <xsd:element name="datiAmministrativi" type="tes:datiAmministrativiType" minOccurs="0" maxOccurs="1"/>
+                        <xsd:element name="classificazione" type="tes:classificazioneType" minOccurs="0" maxOccurs="500"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="chiaveDisposizioneType">
+                <xsd:sequence>
+                        <xsd:element name="tipologiaDisposizione" type="tes:tipologiaDisposizioneType"/>
+                        <xsd:element name="ordinante" type="tes:codiceOrdinanteType"/>
+                        <xsd:element name="dataDisposizione" type="tes:baseDateType"/>
+                        <xsd:element name="identificativoDisposizione" type="tes:string70Type"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="addebitoType">
+                <xsd:sequence>
+                        <xsd:element name="importoAddebito" type="tes:importoType" minOccurs="0"/>
+                        <xsd:element name="divisaAddebito" type="tes:divisaType"/>
+                        <xsd:element name="voceAddebito" type="tes:voceAddebitoType" maxOccurs="100"/>
+                        <xsd:element name="ordinante" minOccurs="0" maxOccurs="1">
+                                <xsd:complexType>
+                                        <xsd:sequence>
+                                                <xsd:element name="descrizioneOrdinante" type="tes:string70ExtType"/>
+                                                <xsd:element name="indirizzoOrdinante" type="tes:indirizzoITType"/>
+                                        </xsd:sequence>
+                                </xsd:complexType>
+                        </xsd:element>
+                        <xsd:element name="versante" type="tes:versanteType" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="naturaSospesoType">
+                <xsd:sequence>
+                        <xsd:element name="tipologiaDisposizione" type="tes:tipologiaDisposizioneType"/>
+                        <xsd:element name="ordinante" type="tes:codiceOrdinanteType"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="datiAmministrativiType">
+                <xsd:sequence>
+                        <xsd:element name="sottoTipologiaAmministrativa" type="tes:string35Type" minOccurs="0"/>
+                        <xsd:element name="ufficioRagioneria" type="tes:string16Type" minOccurs="0" maxOccurs="1"/>
+                        <xsd:element name="amministrazioneCauzionata" type="tes:string140Type" minOccurs="0"/>
+                        <xsd:element name="ufficioCompetente" type="tes:string140Type" minOccurs="0"/>
+                        <xsd:element name="flagCompetenzaResiduiPagamento" type="tes:flagCRType" minOccurs="0"/>
+                        <xsd:element name="provenienzaFondi" type="tes:provenienzaFondiType" minOccurs="0"/>
+                        <xsd:element name="riferimenti" type="tes:riferimentiType" minOccurs="0"/>
+                        <xsd:element name="naturaSospeso" type="tes:naturaSospesoType" minOccurs="0" maxOccurs="1"/>
+                        <xsd:element name="imputazioneBilanciPropri" type="tes:imputazioneBilanciPropriType" minOccurs="0" maxOccurs="100"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="provenienzaFondiType">
+                <xsd:sequence>
+                        <xsd:element name="tipoProvenienzaFondi" minOccurs="0">
+                                <xsd:simpleType>
+                                        <xsd:restriction base="xsd:string">
+                                                <xsd:enumeration value="BIL"/>
+                                                <xsd:enumeration value="BILPREC"/>
+                                                <xsd:enumeration value="CS"/>
+                                                <xsd:enumeration value="TU"/>
+                                                <xsd:enumeration value="AA"/>
+                                                <xsd:enumeration value="MUTUI"/>
+                                                <xsd:enumeration value="PARTITE"/>
+                                                <xsd:enumeration value="ALTRO"/>
+                                        </xsd:restriction>
+                                </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element name="esercizioProvenienzaFondi" type="tes:baseYearType" minOccurs="0"/>
+                        <xsd:element name="annoEmissioneTitoloProvenienzaFondi" type="tes:baseYearType" minOccurs="0" maxOccurs="1"/>
+                        <xsd:element name="contoAddebitoTitoloProvenienzaFondi" type="tes:ibanType" minOccurs="0" maxOccurs="1"/>
+                        <xsd:element name="chiaveDisposizioneProvenienzaFondi" type="tes:chiaveDisposizioneType" minOccurs="0"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="imputazioneBilanciPropriType">
+                <xsd:sequence>
+                        <xsd:element name="imputazione" type="tes:string140Type"/>
+                        <xsd:element name="importoImputazione" type="tes:importoType"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="voceAddebitoType">
+                <xsd:sequence>
+                        <xsd:element name="importoVoceAddebito" type="tes:importoType" minOccurs="0"/>
+                        <xsd:element name="contoAddebito" type="tes:contoAddebitoType" minOccurs="1" maxOccurs="1"/>
+                        <xsd:element name="ibanImputazioneProvvisoria" type="tes:ibanType" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="classificazioneType">
+                <xsd:sequence>
+                        <xsd:element name="COS" type="tes:cosType" minOccurs="0" maxOccurs="1"/>
+                        <xsd:element name="CUP" type="tes:CUPType" minOccurs="0"/>
+                        <xsd:element name="CPV" type="tes:CPVType" minOccurs="0"/>
+                        <xsd:choice minOccurs="0">
+                                <xsd:element name="CIG" type="tes:CIGType"/>
+                                <xsd:element name="motivoEsclusioneCIG" type="tes:motivoEsclusioneCIGType"/>
+                        </xsd:choice>
+                        <xsd:element name="tipoDebito" type="tes:tipoDebitoType" minOccurs="0"/>
+                        <xsd:element name="fattura" type="tes:fatturaType" minOccurs="0" maxOccurs="1"/>
+                        <xsd:element name="importoClassificazione" type="tes:importoType"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="chiaveOPIELType">
+                <xsd:sequence>
+                        <xsd:element name="codiceIstatEnte">
+                                <xsd:simpleType>
+                                        <xsd:restriction base="xsd:string">
+                                                <xsd:minLength value="9"/>
+                                                <xsd:maxLength value="15"/>
+                                        </xsd:restriction>
+                                </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element name="esercizio" type="tes:baseYearType" minOccurs="1" maxOccurs="1"/>
+                        <xsd:element name="identificativoFlusso" type="tes:string70Type" minOccurs="0"/>
+                        <xsd:element name="numeroDocumento" minOccurs="1" maxOccurs="1">
+                                <xsd:simpleType>
+                                        <xsd:restriction base="xsd:positiveInteger">
+                                                <xsd:minInclusive value="1"/>
+                                                <xsd:maxInclusive value="9999999"/>
+                                        </xsd:restriction>
+                                </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element name="progressivoBeneficiario" minOccurs="0">
+                                <xsd:simpleType>
+                                        <xsd:restriction base="xsd:positiveInteger">
+                                                <xsd:minInclusive value="1"/>
+                                                <xsd:maxInclusive value="9999999"/>
+                                        </xsd:restriction>
+                                </xsd:simpleType>
+                        </xsd:element>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="accreditoType">
+                <xsd:sequence>
+                        <xsd:element name="importoAccredito" type="tes:importoType" minOccurs="0"/>
+                        <xsd:element name="divisaAccredito" type="tes:divisaType"/>
+                        <xsd:element name="causalePerBeneficiario" type="tes:string140ExtType"/>
+                        <xsd:element name="contoAccredito" type="tes:contoAccreditoType"/>
+                        <xsd:element name="beneficiario" type="tes:beneficiarioType"/>
+                        <xsd:element name="beneficiarioFinale" type="tes:beneficiarioType" minOccurs="0"/>
+                        <xsd:element name="tipologiaAccredito" type="tes:tipologiaAccreditoType"/>
+                        <xsd:element name="causaleValutaria" type="tes:causaleValutariaType" minOccurs="0"/>
+                        <xsd:element name="categoryPurpose" type="tes:purposeCodeType" minOccurs="0"/>
+                        <xsd:choice minOccurs="0" maxOccurs="1">
+                                <xsd:element name="bonifico" type="tes:bonificoType"/>
+                                <xsd:element name="assegno" type="tes:assegnoType"/>
+                                <xsd:element name="contante" type="tes:contanteType"/>
+                                <xsd:element name="creditoDocumentario" type="tes:datiCreditoDocumentarioType" minOccurs="0"/>
+                        </xsd:choice>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:simpleType name="tipologiaAccreditoType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="BONIFICO"/>
+                        <xsd:enumeration value="GIROFONDI"/>
+                        <xsd:enumeration value="ASSEGNO"/>
+                        <xsd:enumeration value="ASSEGNO_COPGAR"/>
+                        <xsd:enumeration value="CONTANTI"/>
+                        <xsd:enumeration value="SISTEMAZIONE"/>
+                        <xsd:enumeration value="ATTRIBUZIONE"/>
+                        <xsd:enumeration value="CREDITO_DOCUMENTARIO"/>
+                        <xsd:enumeration value="TRASFERIMENTO_INTERBANCARIO"/>
+                        <xsd:enumeration value="GIROFONDI_BDI"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:complexType name="bonificoType">
+                <xsd:sequence>
+                        <xsd:element name="purpose" type="tes:string35Type" minOccurs="0"/>
+                        <xsd:element name="instant" type="tes:flagSNType" default="N" minOccurs="0"/>
+                        <xsd:element name="verificaBeneficiario" type="tes:flagSNType" default="N" minOccurs="0"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="contoAddebitoType">
+                <xsd:choice>
+                        <xsd:element name="BIC" type="tes:BICType"/>
+                        <xsd:element name="iban" type="tes:ibanType"/>
+                </xsd:choice>
+        </xsd:complexType>
+        <xsd:complexType name="contoAccreditoType">
+                <xsd:sequence>
+                        <xsd:sequence>
+                                <xsd:element name="BIC" type="tes:BICType" minOccurs="0"/>
+                                <xsd:choice minOccurs="0">
+                                        <xsd:element name="contoIban" type="tes:contoIbanType"/>
+                                        <xsd:element name="altroIdConto" type="tes:string34ExtType"/>
+                                </xsd:choice>
+                        </xsd:sequence>
+                        <xsd:element name="bancaAccredito" type="tes:istitutoFinanziarioType" minOccurs="0"/>
+                        <xsd:element name="intermediario1" type="tes:istitutoFinanziarioType" minOccurs="0"/>
+                        <xsd:element name="intermediario2" type="tes:istitutoFinanziarioType" minOccurs="0"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="contoIbanType">
+                <xsd:sequence>
+                        <xsd:element name="iban" type="tes:ibanType"/>
+                        <xsd:element name="indicatoreFruttiferoInfruttifero" type="tes:flagFruttiferoType" minOccurs="0"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="assegnoType">
+                <xsd:sequence>
+                        <xsd:element name="destinatario" type="tes:destinatarioType" minOccurs="0" maxOccurs="1"/>
+                        <xsd:element name="dataDecorrenza" type="tes:baseDateType" minOccurs="0"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="contanteType">
+                <xsd:sequence>
+                        <xsd:element name="quietanzante" type="tes:quietanzanteType" minOccurs="0" maxOccurs="2"/>
+                        <xsd:element name="tipoFirma" type="tes:tipoFirmaType" minOccurs="0">
+                                <xsd:annotation>
+                                        <xsd:documentation>Indica la tipologia di firma per i soggetti che svolgono il ruolo di quietanzanti</xsd:documentation>
+                                </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="circolarita" type="tes:flagSNType" default="S" minOccurs="0"/>
+                        <xsd:element name="invioLettera" type="tes:flagSNType" default="N" minOccurs="0"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="versanteType">
+                <xsd:sequence>
+                        <xsd:element name="codiceVersante" type="tes:codiceVersanteType" minOccurs="0"/>
+                        <xsd:element name="codiceFiscaleVersante" type="tes:string16Type" minOccurs="0"/>
+                        <xsd:element name="descrizioneVersante" type="tes:baseStringType"/>
+                        <xsd:element name="provinciaSedeAppartenenzaVersante" type="tes:provinciaITType" minOccurs="0"/>
+                        <xsd:element name="dataVersamento" type="tes:baseDateType" minOccurs="0"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="sistemazioneType">
+                <xsd:sequence>
+                        <xsd:element name="chiaveDisposizioneDaSistemare" type="tes:chiaveDisposizioneType"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="datiIdentificativiType">
+                <xsd:sequence>
+                        <!--                    <xsd:element name="codiceIndividuale" type="tes:codiceIndividualeType" minOccurs="1" maxOccurs="1">
+                        </xsd:element>
+-->
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="datiCreditoDocumentarioType">
+                <xsd:sequence>
+                        <xsd:element name="strutturaDaDefinire" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="indirizzoType">
+                <xsd:sequence>
+                        <xsd:element name="via" type="tes:string70ExtType"/>
+                        <xsd:element name="civico" type="tes:string16ExtType" minOccurs="0"/>
+                        <xsd:element name="citta" type="tes:string35ExtType"/>
+                        <xsd:element name="provincia" type="tes:string35ExtType"/>
+                        <xsd:element name="CAP" type="tes:string16ExtType" minOccurs="0"/>
+                        <xsd:element name="nazione" type="tes:nazioneType" minOccurs="1" maxOccurs="1"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="datiNascitaType">
+                <xsd:sequence>
+                        <xsd:element name="dataNascita" type="tes:baseDateType"/>
+                        <xsd:element name="cittaNascita" type="tes:string35ExtType"/>
+                        <xsd:element name="provinciaNascita" type="tes:string35ExtType"/>
+                        <xsd:element name="nazioneNascita" type="tes:nazioneType"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="annullamentoType">
+                <xsd:sequence>
+                        <xsd:element name="chiaveDisposizioneDaAnnullare" type="tes:chiaveDisposizioneType"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:simpleType name="documentoElettronicoType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="ELETTRONICO"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="documentoAnalogicoType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="ANALOGICO"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="codiceIPAEnteType">
+                <xsd:annotation>
+                        <xsd:documentation>Codice IPA Ente (Ufficio fatturazione elettronica)</xsd:documentation>
+                </xsd:annotation>
+                <xsd:restriction base="xsd:string">
+                        <xsd:length value="6"/>
+                        <xsd:pattern value="[A-Z0-9]{6}"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:complexType name="datiFatturaType">
+                <xsd:annotation>
+                        <xsd:documentation>Struttura che contiene dati comuni a fatture elettroniche e analogiche della fattura associata all'ordinativo, obbligatoria se tipo_debito_siope="COMMERCIALE", può essere ripetuta più volte</xsd:documentation>
+                </xsd:annotation>
+                <xsd:sequence>
+                        <xsd:element name="numeroFattura">
+                                <xsd:annotation>
+                                        <xsd:documentation>Contiene il numero della fattura</xsd:documentation>
+                                </xsd:annotation>
+                                <xsd:simpleType>
+                                        <xsd:restriction base="xsd:string">
+                                                <xsd:minLength value="1"/>
+                                                <xsd:maxLength value="20"/>
+                                        </xsd:restriction>
+                                </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element name="importoFattura">
+                                <xsd:annotation>
+                                        <xsd:documentation>Importo pagato per la fattura. Puo' assumere valore negativo</xsd:documentation>
+                                </xsd:annotation>
+                                <xsd:simpleType>
+                                        <xsd:restriction base="xsd:decimal">
+                                                <xsd:totalDigits value="15"/>
+                                                <xsd:fractionDigits value="2"/>
+                                        </xsd:restriction>
+                                </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element name="dataScadenzaPagamento" minOccurs="1">
+                                <xsd:annotation>
+                                        <xsd:documentation>Data di scadenza del pagamento, obbligatoria se diversa da quella indicata nella fattura elettronica</xsd:documentation>
+                                </xsd:annotation>
+                                <xsd:simpleType>
+                                        <xsd:restriction base="tes:baseDateType"/>
+                                </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element name="motivoScadenza" minOccurs="0">
+                                <xsd:annotation>
+                                        <xsd:documentation>Ragione che determina la scadenza del pagamento</xsd:documentation>
+                                </xsd:annotation>
+                                <xsd:simpleType>
+                                        <xsd:restriction base="xsd:string">
+                                                <xsd:enumeration value="SCAD_FATTURA"/>
+                                                <xsd:enumeration value="CORRETTA_SCAD_FATTURA"/>
+                                                <xsd:enumeration value="SOSP_DECORRENZA_TERMINI"/>
+                                        </xsd:restriction>
+                                </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element name="naturaSpesa">
+                                <xsd:annotation>
+                                        <xsd:documentation>Contiene la natura di spesa della fattura</xsd:documentation>
+                                </xsd:annotation>
+                                <xsd:simpleType>
+                                        <xsd:restriction base="xsd:string">
+                                                <xsd:enumeration value="CORRENTE"/>
+                                                <xsd:enumeration value="CAPITALE"/>
+                                        </xsd:restriction>
+                                </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element name="utilizzoNotaDiCredito" minOccurs="0">
+                                <xsd:annotation>
+                                        <xsd:documentation>Contiene il tipo di utilizzo della nota di credito</xsd:documentation>
+                                </xsd:annotation>
+                                <xsd:simpleType>
+                                        <xsd:restriction base="xsd:string">
+                                                <xsd:enumeration value="INCASSO/COMPENSAZIONE"/>
+                                                <xsd:enumeration value="SPLIT PAYMENT"/>
+                                        </xsd:restriction>
+                                </xsd:simpleType>
+                        </xsd:element>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="fatturaType">
+                <xsd:sequence>
+                        <xsd:element name="codiceIPAEnte" type="tes:codiceIPAEnteType">
+                                <xsd:annotation>
+                                        <xsd:documentation>Codice ipa del destinatario della fattura</xsd:documentation>
+                                </xsd:annotation>
+                        </xsd:element>
+                        <xsd:choice>
+                                <xsd:sequence>
+                                        <xsd:element name="documentoElettronico" type="tes:documentoElettronicoType">
+                                                <xsd:annotation>
+                                                        <xsd:documentation>Indica che si tratta di un documento elettronico</xsd:documentation>
+                                                </xsd:annotation>
+                                        </xsd:element>
+                                        <xsd:element name="identificativoLottoSDI">
+                                                <xsd:annotation>
+                                                        <xsd:documentation>Identificativo del lotto SDI con cui è stata trasmessa la fattura elettronica</xsd:documentation>
+                                                </xsd:annotation>
+                                                <xsd:simpleType>
+                                                        <xsd:restriction base="xsd:long">
+                                                                <xsd:minInclusive value="1"/>
+                                                        </xsd:restriction>
+                                                </xsd:simpleType>
+                                        </xsd:element>
+                                </xsd:sequence>
+                                <xsd:sequence>
+                                        <xsd:element name="documentoAnalogico" type="tes:documentoAnalogicoType">
+                                                <xsd:annotation>
+                                                        <xsd:documentation>Indica che si tratta di un documento analogico</xsd:documentation>
+                                                </xsd:annotation>
+                                        </xsd:element>
+                                        <xsd:element name="tipologiaDocumentoAnalogico">
+                                                <xsd:annotation>
+                                                        <xsd:documentation>Indica la tipologia del documento nel caso in cui questo non si riferisca ad una fattura elettronica PA</xsd:documentation>
+                                                </xsd:annotation>
+                                                <xsd:simpleType>
+                                                        <xsd:restriction base="xsd:string">
+                                                                <xsd:enumeration value="FATT_ANALOGICA"/>
+                                                                <xsd:enumeration value="DOC_EQUIVALENTE"/>
+                                                        </xsd:restriction>
+                                                </xsd:simpleType>
+                                        </xsd:element>
+                                        <xsd:element name="codiceFiscaleEmittente">
+                                                <xsd:annotation>
+                                                        <xsd:documentation>Codice fiscale dell’emittente la fattura analogica o il documento equivalente</xsd:documentation>
+                                                </xsd:annotation>
+                                                <xsd:simpleType>
+                                                        <xsd:restriction base="xsd:string">
+                                                                <xsd:minLength value="1"/>
+                                                                <xsd:maxLength value="30"/>
+                                                        </xsd:restriction>
+                                                </xsd:simpleType>
+                                        </xsd:element>
+                                        <xsd:element name="annoEmissioneFattura">
+                                                <xsd:annotation>
+                                                        <xsd:documentation>Indica l’anno di emissione della fattura analogica o del documento equivalente, nel formato "YYYY"</xsd:documentation>
+                                                </xsd:annotation>
+                                                <xsd:simpleType>
+                                                        <xsd:restriction base="xsd:nonNegativeInteger">
+                                                                <xsd:minInclusive value="1980"/>
+                                                                <xsd:maxInclusive value="2099"/>
+                                                        </xsd:restriction>
+                                                </xsd:simpleType>
+                                        </xsd:element>
+                                </xsd:sequence>
+                        </xsd:choice>
+                        <xsd:element name="datiFattura" type="tes:datiFatturaType"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:simpleType name="importoType">
+                <xsd:restriction base="xsd:decimal">
+                        <xsd:totalDigits value="18"/>
+                        <xsd:fractionDigits value="3"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="divisaType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:length value="3"/>
+                        <xsd:pattern value="[A-Z]{3}"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="BICType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:length value="11"/>
+                        <xsd:pattern value="[A-Z0-9]{4}[A-Z]{2}[A-Z0-9]{2}[A-Z0-9]{3}"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="ibanType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:minLength value="10"/>
+                        <xsd:maxLength value="34"/>
+                        <xsd:pattern value="[A-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="nazioneType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:length value="2"/>
+                        <xsd:pattern value="[A-Z]{2}"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="tipologiaDisposizioneType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="15"/>
+                        <xsd:minLength value="3"/>
+                        <xsd:pattern value="[A-Z0-9]{3,10}(\.[A-Z0-9]{3,10}){0,3}"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:complexType name="riemissioneType">
+                <xsd:sequence>
+                        <xsd:element name="contoIbanAccredito" type="tes:contoIbanType"/>
+                        <xsd:element name="importoRiemissione" type="tes:importoType"/>
+                        <xsd:element name="end2endID" type="tes:string35ExtType" minOccurs="0"/>
+                        <xsd:element name="versante" type="tes:variazioneVersanteType"/>
+                        <xsd:element name="causaleVersamento" type="tes:baseStringType"/>
+                        <xsd:element name="territorialita" type="tes:provinciaITType"/>
+                        <xsd:element name="regolamentoTF" type="tes:regolamentoTFType" minOccurs="0"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="variazioneEntrataType">
+                <xsd:sequence>
+                        <xsd:element name="quietanza" type="tes:chiaveQuietanzaType"/>
+                        <xsd:element name="contoIbanAddebito" type="tes:ibanType"/>
+                        <xsd:element name="riemissione" type="tes:riemissioneType" maxOccurs="999"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="istitutoFinanziarioType">
+                <xsd:sequence>
+                        <xsd:choice>
+                                <xsd:element name="BIC" type="tes:BICType"/>
+                                <xsd:element name="altroIdBanca">
+                                        <xsd:complexType>
+                                                <xsd:sequence>
+                                                        <xsd:element name="denominazioneBanca" type="tes:string70ExtType"/>
+                                                        <xsd:element name="indirizzo" type="tes:indirizzoType"/>
+                                                        <xsd:element name="clearingSystemId" type="tes:string35ExtType" minOccurs="0"/>
+                                                </xsd:sequence>
+                                        </xsd:complexType>
+                                </xsd:element>
+                        </xsd:choice>
+                        <xsd:choice minOccurs="0">
+                                <xsd:element name="iban" type="tes:ibanType"/>
+                                <xsd:element name="altroIdConto" type="tes:string34ExtType"/>
+                        </xsd:choice>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:simpleType name="baseStringType">
+                <xsd:annotation>
+                        <xsd:documentation>tipo base per campi stringa</xsd:documentation>
+                </xsd:annotation>
+                <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="1000"/>
+                        <xsd:minLength value="1"/>
+                        <xsd:pattern value="[0-9a-zA-Z#_/\-\?:\(\)\.,'\+% àèéìòùÀÈÉÌÒÙ]*"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="baseDateType">
+                <xsd:annotation>
+                        <xsd:documentation>tipo base per campi data</xsd:documentation>
+                </xsd:annotation>
+                <xsd:restriction base="xsd:date">
+                        <xsd:maxInclusive value="9999-12-31"/>
+                        <xsd:minInclusive value="1900-01-01"/>
+                        <xsd:pattern value="[^:Z]*"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="baseYearType">
+                <xsd:annotation>
+                        <xsd:documentation>tipo base per campi anno</xsd:documentation>
+                </xsd:annotation>
+                <xsd:restriction base="xsd:positiveInteger">
+                        <xsd:minInclusive value="1900"/>
+                        <xsd:maxInclusive value="9999"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="baseStringExtType">
+                <xsd:annotation>
+                        <xsd:documentation>tipo base per i soli campi da inviare su circuito di regolamento</xsd:documentation>
+                </xsd:annotation>
+                <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="1000"/>
+                        <xsd:minLength value="1"/>
+                        <xsd:pattern value="([0-9a-zA-Z/\-\?:\(\)\.,'\+]{1,1}[0-9a-zA-Z/\-\?:\(\)\.,'\+ ]*)?[0-9a-zA-Z/\-\?:\(\)\.,'\+]"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="string16ExtType">
+                <xsd:restriction base="tes:baseStringExtType">
+                        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="16"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="string35ExtType">
+                <xsd:restriction base="tes:baseStringExtType">
+                        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="35"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="string34ExtType">
+                <xsd:restriction base="tes:baseStringExtType">
+                        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="34"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="string70ExtType">
+                <xsd:restriction base="tes:baseStringExtType">
+                        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="70"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="string140ExtType">
+                <xsd:restriction base="tes:baseStringExtType">
+                        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="140"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="string16Type">
+                <xsd:restriction base="tes:baseStringType">
+                        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="16"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="string35Type">
+                <xsd:restriction base="tes:baseStringType">
+                        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="35"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="string70Type">
+                <xsd:restriction base="tes:baseStringType">
+                        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="70"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="string140Type">
+                <xsd:restriction base="tes:baseStringType">
+                        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="140"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="flagSNType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:length value="1"/>
+                        <xsd:enumeration value="S"/>
+                        <xsd:enumeration value="N"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="flagCRType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:length value="1"/>
+                        <xsd:enumeration value="C"/>
+                        <xsd:enumeration value="R"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="ISINType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:length value="12"/>
+                        <xsd:pattern value="[0-9A-Z]{12}"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:complexType name="notaImputazioneType">
+                <xsd:sequence>
+                        <xsd:element name="nota" type="tes:string35Type"/>
+                        <xsd:element name="ISIN" type="tes:ISINType"/>
+                        <xsd:element name="chiaveDisposizioneOriginaria" type="tes:chiaveDisposizioneType"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:simpleType name="tipoRiferimentoNormativoType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="REG_UE"/>
+                        <xsd:enumeration value="L"/>
+                        <xsd:enumeration value="DLGS"/>
+                        <xsd:enumeration value="DL"/>
+                        <xsd:enumeration value="LR"/>
+                        <xsd:enumeration value="RD"/>
+                        <xsd:enumeration value="DPR"/>
+                        <xsd:enumeration value="DPCM"/>
+                        <xsd:enumeration value="DM"/>
+                        <xsd:enumeration value="D_INTERM"/>
+                        <xsd:enumeration value="OPCM"/>
+                        <xsd:enumeration value="ORD"/>
+                        <xsd:enumeration value="OCDPC"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:complexType name="riferimentiType">
+                <xsd:sequence>
+                        <xsd:element name="riferimentoNormativo" type="tes:riferimentoNormativoType" minOccurs="0"/>
+                        <xsd:element name="provvedimentoAmministrativo" type="tes:string140Type" minOccurs="0"/>
+                        <xsd:choice minOccurs="0">
+                                <xsd:element name="ordineAccreditamento" type="tes:string35Type"/>
+                                <xsd:element name="notaImputazione" type="tes:notaImputazioneType"/>
+                                <xsd:element name="OPIEL" type="tes:chiaveOPIELType"/>
+                                <xsd:element name="INPS">
+                                        <xsd:complexType>
+                                                <xsd:sequence>
+                                                        <xsd:element name="codiceSoggetto" type="tes:string35Type"/>
+                                                </xsd:sequence>
+                                        </xsd:complexType>
+                                </xsd:element>
+                                <xsd:element name="quietanza" type="tes:chiaveQuietanzaType"/>
+                        </xsd:choice>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:simpleType name="flagFruttiferoType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:length value="1"/>
+                        <xsd:enumeration value="F"/>
+                        <xsd:enumeration value="I"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="tipoFirmaType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="SINGOLA_BENEFICIARIO_AMMESSO"/>
+                        <xsd:enumeration value="SINGOLA_BENEFICIARIO_NON_AMMESSO"/>
+                        <xsd:enumeration value="CONGIUNTA_BENEFICIARIO_AMMESSO"/>
+                        <xsd:enumeration value="CONGIUNTA_BENEFICIARIO_NON_AMMESSO"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:complexType name="beneficiarioType">
+                <xsd:sequence>
+                        <xsd:element name="nazioneResidenza" type="tes:nazioneType" minOccurs="0"/>
+                        <xsd:element name="denominazione" type="tes:string70ExtType"/>
+                        <xsd:element name="tipoSoggetto" type="tes:tipoSoggettoType" minOccurs="0"/>
+                        <xsd:element name="id" type="tes:string35ExtType" minOccurs="0">
+                                <xsd:annotation>
+                                        <xsd:documentation>DA COMPILARE CON CF o P.IVA o altro identificativo per soggetti esteri</xsd:documentation>
+                                </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="datiNascita" type="tes:datiNascitaType" minOccurs="0"/>
+                        <xsd:element name="indirizzo" type="tes:indirizzoBeneficiarioType" minOccurs="0"/>
+                        <xsd:element name="provinciaSedeAppartenenza" type="tes:provinciaITType" minOccurs="0"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:simpleType name="tipoSoggettoType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:length value="2"/>
+                        <xsd:enumeration value="PF"/>
+                        <xsd:enumeration value="PG"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="causaleValutariaType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:length value="4"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="purposeCodeType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="4"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:complexType name="destinatarioType">
+                <xsd:sequence>
+                        <xsd:element name="denominazione" type="tes:string70ExtType"/>
+                        <xsd:element name="indirizzo" type="tes:indirizzoITType"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="quietanzanteType">
+                <xsd:sequence>
+                        <xsd:element name="id" type="tes:string35ExtType">
+                                <xsd:annotation>
+                                        <xsd:documentation>C.F. del quietanzante</xsd:documentation>
+                                </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="denominazione" type="tes:string70ExtType"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="variazioneVersanteType">
+                <xsd:sequence>
+                        <xsd:element name="codiceVersante" type="tes:codiceVersanteType" minOccurs="0"/>
+                        <xsd:element name="codiceFiscaleVersante" type="tes:string35ExtType" minOccurs="0"/>
+                        <xsd:element name="descrizioneVersante" type="tes:baseStringType"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="chiaveQuietanzaType">
+                <xsd:sequence>
+                        <xsd:element name="anno" type="tes:baseYearType"/>
+                        <xsd:element name="numero">
+                                <xsd:simpleType>
+                                        <xsd:restriction base="xsd:positiveInteger">
+                                                <xsd:minInclusive value="1"/>
+                                                <xsd:maxInclusive value="9223372036854775807"/>
+                                        </xsd:restriction>
+                                </xsd:simpleType>
+                        </xsd:element>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="reimputazioneType">
+                <xsd:sequence>
+                        <xsd:element name="contoIbanAddebito" type="tes:ibanType"/>
+                        <xsd:element name="importoReimputazione" type="tes:importoType"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="variazioneUscitaType">
+                <xsd:sequence>
+                        <xsd:element name="chiaveDisposizioneDaVariare" type="tes:chiaveDisposizioneType"/>
+                        <xsd:element name="contoIbanAccredito" type="tes:ibanType"/>
+                        <xsd:element name="reimputazione" type="tes:reimputazioneType" maxOccurs="100"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="indirizzoITType">
+                <xsd:complexContent>
+                        <xsd:restriction base="tes:indirizzoType">
+                                <xsd:sequence>
+                                        <xsd:element name="via" type="tes:string70ExtType"/>
+                                        <xsd:element name="civico" type="tes:string16ExtType" minOccurs="0"/>
+                                        <xsd:element name="citta" type="tes:string35ExtType"/>
+                                        <xsd:element name="provincia" type="tes:provinciaITType"/>
+                                        <xsd:element name="CAP" type="tes:CAPType"/>
+                                        <xsd:element name="nazione" type="tes:nazioneType" fixed="IT" minOccurs="1" maxOccurs="1"/>
+                                </xsd:sequence>
+                        </xsd:restriction>
+                </xsd:complexContent>
+        </xsd:complexType>
+        <xsd:simpleType name="provinciaITType">
+                <xsd:restriction base="tes:string35ExtType">
+                        <xsd:minLength value="2"/>
+                        <xsd:maxLength value="2"/>
+                        <xsd:pattern value="[A-Z]{2}"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="CAPType">
+                <xsd:restriction base="tes:string16ExtType">
+                        <xsd:maxLength value="5"/>
+                        <xsd:minLength value="5"/>
+                        <xsd:pattern value="[0-9]{5}"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="cosType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="3"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="CPVType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="16"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="CIGType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="16"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="CUPType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="16"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="clearingType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="5"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:complexType name="riferimentoNormativoType">
+                <xsd:sequence>
+                        <xsd:element name="anno" type="tes:baseYearType"/>
+                        <xsd:element name="tipo" type="tes:tipoRiferimentoNormativoType"/>
+                        <xsd:element name="numero" type="xsd:positiveInteger"/>
+                        <xsd:element name="articolo" type="tes:string35Type" minOccurs="0"/>
+                        <xsd:element name="subArticolo" type="tes:string35Type" minOccurs="0"/>
+                        <xsd:element name="comma" type="tes:string35Type" minOccurs="0"/>
+                        <xsd:element name="subComma" type="tes:string35Type" minOccurs="0"/>
+                        <xsd:element name="punto" type="tes:string35Type" minOccurs="0"/>
+                        <xsd:element name="subPunto" type="tes:string35Type" minOccurs="0"/>
+                </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="regolamentoTFType">
+                <xsd:complexContent>
+                        <xsd:restriction base="tes:accreditoType">
+                                <xsd:sequence>
+                                        <xsd:element name="divisaAccredito" type="tes:divisaType" fixed="EUR"/>
+                                        <xsd:element name="causalePerBeneficiario" type="tes:string140ExtType"/>
+                                        <xsd:element name="contoAccredito" type="tes:contoAccreditoType"/>
+                                        <xsd:element name="beneficiario" type="tes:beneficiarioType"/>
+                                        <xsd:element name="tipologiaAccredito">
+                                                <xsd:simpleType>
+                                                        <xsd:restriction base="tes:tipologiaAccreditoType">
+                                                                <xsd:enumeration value="BONIFICO"/>
+                                                                <xsd:enumeration value="GIROFONDI_BDI"/>
+                                                        </xsd:restriction>
+                                                </xsd:simpleType>
+                                        </xsd:element>
+                                        <xsd:element name="categoryPurpose" type="tes:purposeCodeType" minOccurs="0"/>
+                                </xsd:sequence>
+                        </xsd:restriction>
+                </xsd:complexContent>
+        </xsd:complexType>
+        <xsd:simpleType name="motivoEsclusioneCIGType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="ACCORDO_AMM_AGGIUDICATRICI"/>
+                        <xsd:enumeration value="ACQUISTO_LOCAZIONE"/>
+                        <xsd:enumeration value="AFFIDAMENTI_IN_HOUSE"/>
+                        <xsd:enumeration value="AMMINISTRAZIONE_DIRETTA"/>
+                        <xsd:enumeration value="APPALTI_ENERGIA_ACQUA"/>
+                        <xsd:enumeration value="ARBITRATO"/>
+                        <xsd:enumeration value="ATTIVITA_CONCORRENZA"/>
+                        <xsd:enumeration value="CONCESSIONI_PAESI_TERZI"/>
+                        <xsd:enumeration value="CONTRATTI_ASSOCIAZIONE"/>
+                        <xsd:enumeration value="CONTRATTI_AUTORITA_GIUDIZIARIA"/>
+                        <xsd:enumeration value="CONTRATTI_DIFESA"/>
+                        <xsd:enumeration value="CONTRATTI_ESTERO"/>
+                        <xsd:enumeration value="CONTRATTI_LAVORO"/>
+                        <xsd:enumeration value="DIRITTO_ESCLUSIVO"/>
+                        <xsd:enumeration value="EROGAZIONI_LIBERALITA"/>
+                        <xsd:enumeration value="IMPRESA_COLLEGATA"/>
+                        <xsd:enumeration value="INCARICHI_COLLABORAZIONE"/>
+                        <xsd:enumeration value="JOINT_VENTURE"/>
+                        <xsd:enumeration value="PRESTAZIONI"/>
+                        <xsd:enumeration value="RIASSICURAZIONE"/>
+                        <xsd:enumeration value="RISARCIMENTI_INDENNIZZI"/>
+                        <xsd:enumeration value="SERVIZI_BANCHE_CENTRALI_EFSF"/>
+                        <xsd:enumeration value="SERVIZI_CAMPAGNE_POLITICHE"/>
+                        <xsd:enumeration value="SPESE_ECONOMALI"/>
+                        <xsd:enumeration value="SPONSORIZZAZIONE_PURA"/>
+                        <xsd:enumeration value="TRASFERIMENTO_FONDI"/>
+                        <xsd:enumeration value="TRASPORTO_AEREO"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="tipoDebitoType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="COMMERCIALE"/>
+                        <xsd:enumeration value="IVA"/>
+                        <xsd:enumeration value="NON_COMMERCIALE"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:complexType name="indirizzoBeneficiarioType">
+                <xsd:complexContent>
+                        <xsd:restriction base="tes:indirizzoType">
+                                <xsd:sequence>
+                                        <xsd:element name="via" type="tes:string70ExtType"/>
+                                        <xsd:element name="civico" type="tes:string16ExtType" minOccurs="0"/>
+                                        <xsd:element name="citta" type="tes:string35ExtType"/>
+                                        <xsd:element name="provincia" type="tes:string35ExtType"/>
+                                        <xsd:element name="CAP" type="tes:string16ExtType"/>
+                                        <xsd:element name="nazione" type="tes:nazioneType" minOccurs="1" maxOccurs="1"/>
+                                </xsd:sequence>
+                        </xsd:restriction>
+                </xsd:complexContent>
+        </xsd:complexType>
+        <xsd:simpleType name="codiceVersanteType">
+                <xsd:restriction base="tes:baseStringType">
+                        <xsd:maxLength value="10"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="codiceOrdinanteType">
+                <xsd:restriction base="tes:baseStringType">
+                        <xsd:maxLength value="19"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+</xsd:schema>
