@@ -42,16 +42,16 @@ def valida_xml(xml_file, schema):
         return False
 
 
-def processa_file_xml(xml_file, schema, directory_ok, directory_ko):
+def processa_file_xml(xml_file, schema, directory_ok, directory_ko, zip_key):
     """Valida un file XML e lo sposta nella cartella appropriata."""
     if valida_xml(xml_file, schema):
         shutil.move(xml_file, os.path.join(directory_ok, os.path.basename(xml_file)))
-        logging.info(f"{os.path.basename(xml_file)} è valido. Spostato in {directory_ok}.")
-        print(f"{os.path.basename(xml_file)} è valido.")
+        logging.info(f"[{zip_key}] {os.path.basename(xml_file)} e valido. Spostato in {directory_ok}.")
+        print(f"[{zip_key}] {os.path.basename(xml_file)} e valido.")
     else:
         shutil.move(xml_file, os.path.join(directory_ko, os.path.basename(xml_file)))
-        logging.info(f"{os.path.basename(xml_file)} non è valido. Spostato in {directory_ko}.")
-        print(f"{os.path.basename(xml_file)} non è valido.")
+        logging.info(f"{zip_key} {os.path.basename(xml_file)} non è valido. Spostato in {directory_ko}.")
+        print(f"{zip_key} {os.path.basename(xml_file)} non è valido.")
 
 
 def get_args():
@@ -63,7 +63,7 @@ def get_args():
     
     return args.file
 
-def processa_xml(directory_xml, xsd_file, directory_ok, directory_ko):
+def processa_xml(directory_xml, xsd_file, directory_ok, directory_ko, zip_key):
     """Processa tutti i file XML nella cartella senza multiprocessing."""
     if not os.path.exists(directory_ok):
         os.makedirs(directory_ok)
@@ -82,7 +82,7 @@ def processa_xml(directory_xml, xsd_file, directory_ok, directory_ko):
 
     # Processa i file uno alla volta
     for xml_file in files_xml:
-        processa_file_xml(xml_file, schema, directory_ok, directory_ko)
+        processa_file_xml(xml_file, schema, directory_ok, directory_ko, zip_key)
 
 
 def get_s3_config():
@@ -123,7 +123,7 @@ def processa_zip(zip_key, minio_client, s3_bucket):
         directory_ko = os.getenv("XML_KO_DIRECTORY")
 
         # Esegui il programma senza multiprocessing
-        processa_xml(directory_xml, xsd_file, directory_ok, directory_ko)
+        processa_xml(directory_xml, xsd_file, directory_ok, directory_ko, zip_key)
 
 
 zip_keys = get_args()
