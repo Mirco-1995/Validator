@@ -5,6 +5,7 @@ description = "Validatore XML OPI"
 authors = ["Mirco Mazzolena <mirco.mazzolena2@dxc.com>"]
 readme = "README.md"
 packages = [{ include = "opi_validator", from = "src" }]
+include = ["src/opi_validator/resources/*.xsd"]
 
 [tool.poetry.dependencies]
 python = ">=3.9"
