@@ -8,6 +8,7 @@ from pathlib import Path
 from minio import Minio
 from dotenv import load_dotenv
 from lxml import etree
+from concurrent.futures import ThreadPoolExecutor
 
 logging.basicConfig(
     filename='log.txt',
@@ -55,7 +56,7 @@ def processa_file_xml(xml_file, schema, directory_ok, directory_ko):
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-f", "--file", required=True)
+    parser.add_argument("-f", "--file", required=True, nargs="+")
     args = parser.parse_args()
     
     load_dotenv()
@@ -102,11 +103,7 @@ def get_s3_config():
     return minio_client, s3_bucket
 
 
-def main():
-    zip_key = get_args()
-
-    minio_client, s3_bucket = get_s3_config()
-
+def processa_zip(zip_key, minio_client, s3_bucket):
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_path = Path(tmp_dir)
 
@@ -127,6 +124,18 @@ def main():
 
         # Esegui il programma senza multiprocessing
         processa_xml(directory_xml, xsd_file, directory_ok, directory_ko)
+
+
+def main():
+    zip_keys = get_args()
+
+    minio_client, s3_bucket = get_s3_config()
+
+    with ThreadPoolExecutor() as executor:
+        futures = [executor.submit(processa_zip, zip_key, minio_client, s3_bucket) for zip_key in zip_keys]
+
+        for f in futures:
+            f.result()
 
 
 if __name__ == "__main__":
