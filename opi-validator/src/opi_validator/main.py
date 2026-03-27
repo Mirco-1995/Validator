@@ -4,6 +4,7 @@ import logging
 import zipfile
 import tempfile
 import argparse
+import pkg_resources
 from pathlib import Path
 from minio import Minio
 from dotenv import load_dotenv
@@ -58,8 +59,6 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", required=True, nargs="+")
     args = parser.parse_args()
-    
-    load_dotenv()
     
     return args.file
 
@@ -117,8 +116,8 @@ def processa_zip(zip_key, minio_client, s3_bucket):
 
         directory_xml = str(tmp_path)
 
-        # Impostazioni delle directory e del file XSD
-        xsd_file = os.getenv("XSD_FILE")
+        xsd_file = pkg_resources.resource_filename('opi_validator', 'resources/Tesoreria_Disposizioni.xsd')
+        
         directory_ok = os.getenv("XML_OK_DIRECTORY")
         directory_ko = os.getenv("XML_KO_DIRECTORY")
 
