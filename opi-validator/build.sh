@@ -13,15 +13,13 @@
 
 install_tool() {
   # Installazione dei tool per gestire il processo di build
-  # ad esempio:
-  #   pip install poetry
-  pip install poetry
+  pip install -r requirements_build.txt
 }
 
 build() {
   # Creazione pacchetti distribuibili (sdist e wheel)
   # ad esempio:
-  #   poetry build
+  #    poetry build
   #
   # È possibile utilizzare la variabile $ENVIRONMENT per accedere
   # al profilo richiesto dalla pipeline.
