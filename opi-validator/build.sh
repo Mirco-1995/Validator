@@ -29,8 +29,7 @@ build() {
   poetry build
   
   # Generazione del pacchetto .dist.tar.gz per il deploy su RHEL
-  # Nota: --with cli fa riferimento all'entry point definito nel tuo pyproject.toml
-  poetry pack-dist --platform "$PLATFORM" --with cli
+  poetry pack-dist --platform "$PLATFORM"
 }
 
 release() {

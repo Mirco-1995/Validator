@@ -7,7 +7,6 @@ import argparse
 import pkg_resources
 from pathlib import Path
 from minio import Minio
-from dotenv import load_dotenv
 from lxml import etree
 from concurrent.futures import ThreadPoolExecutor
 

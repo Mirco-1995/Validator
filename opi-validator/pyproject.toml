@@ -10,7 +10,6 @@ include = ["src/opi_validator/resources/*.xsd"]
 [tool.poetry.dependencies]
 python = ">=3.9"
 minio = "*"
-python-dotenv = "*"
 lxml = "*"
 
 [tool.poetry.scripts]
