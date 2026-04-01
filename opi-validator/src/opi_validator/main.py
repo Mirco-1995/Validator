@@ -20,9 +20,8 @@ logging.basicConfig(
 def compila_schema_xsd(xsd_file):
     """Compila lo schema XSD una sola volta."""
     try:
-        with open(xsd_file, 'rb') as schema_file:
-            schema_root = etree.XML(schema_file.read())
-            return etree.XMLSchema(schema_root)
+        xsd_doc = etree.parse(xsd_file)
+        return etree.XMLSchema(xsd_doc)
     except Exception as e:
         logging.error(f"Errore nella compilazione dello schema XSD {xsd_file}: {e}")
         return None
